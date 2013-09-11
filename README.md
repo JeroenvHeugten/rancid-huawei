@@ -10,6 +10,6 @@ Installation:
 
 - Update /usr/lib/rancid/bin/rancid-fe,  add "'huawei' => 'huarancid',"
 - Update /networkdc2/router.db,  add "DEVICENAME:huawei:up"
-- Place the huarancid script in /usr/lib/rancid/bin/rancid-fe
+- Place the huarancid script in /usr/lib/rancid/bin/
 - Add device to .cloginrc
 
