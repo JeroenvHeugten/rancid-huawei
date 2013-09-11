@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use Net::Telnet ();
+use File::Slurp;
+
+    my $host = $ARGV[0];
+    my $username = "********";
+    my $passwd = "********";
+
+    my $FH;
+    my $t = new Net::Telnet (Timeout => 10,
+                          Prompt => '/<AntiDDoS>/');
+
+    $t->open($host);
+    $t->login($username, $passwd);
+    $t->print("display current-configuration");
+    config:
+        while (my $line = $t->getline(Timeout => 10)) {
+            $line =~ s/\s+---- More ----\x1B\x5B\x34\x32\x44\s+\x1B\x5B\x34\x32\x44//i;
+            $line =~ s/(\d{2}:\d{2}:\d{2}\s+\d{4}\/\d{2}\/\d{2})/#$1/;
+
+        if ($line =~ m/>.*$/) {
+                last config;
+            } else {
+                unless ($line =~ m/current-configuration/) {
+                    $FH.= $line;
+                }
+                $t->print(' ');
+            }
+        }
+
+    write_file('/var/lib/rancid/networkdc2/configs/antiddos',$FH);
